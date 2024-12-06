@@ -7,9 +7,9 @@ import java.util.*;
 
 @Component
 public class CryptoStorage {
-    private Map<UUID, CryptoAccount> cryptoStorageMap = new HashMap<>();
+    private final Map<UUID, CryptoAccount> cryptoStorageMap = new HashMap<>();
 
-    public void save(CryptoAccount cryptoAccount) {
+    public void saveAccount(CryptoAccount cryptoAccount) {
         UUID uuid = cryptoAccount.getUuid();
         if (cryptoStorageMap.containsKey(uuid)) {
             throw new RuntimeException("Пользователь с указанным UUID уже существует!");
@@ -26,9 +26,9 @@ public class CryptoStorage {
         return Optional.ofNullable(cryptoStorageMap.get(uuid));
     }
 
-    public Optional<List<CryptoAccount>> getAllAccountsByLogin(String login) {
-        return Optional.of(cryptoStorageMap.values().stream()
+    public List<CryptoAccount> getAllAccountsByLogin(String login) {
+        return cryptoStorageMap.values().stream()
                 .filter(cryptoAccount -> Objects.equals(cryptoAccount.getUserLogin(), login))
-                .toList());
+                .toList();
     }
 }
