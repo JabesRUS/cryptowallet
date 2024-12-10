@@ -3,7 +3,6 @@ package com.javaacademy.cryptowallet.service;
 import com.javaacademy.cryptowallet.dto.CryptoAccountDto;
 import com.javaacademy.cryptowallet.entity.CryptoAccount;
 import com.javaacademy.cryptowallet.entity.CryptoCurrency;
-import com.javaacademy.cryptowallet.entity.User;
 import com.javaacademy.cryptowallet.mapper.CryptoAccountMapper;
 import com.javaacademy.cryptowallet.repository.CryptoRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import java.util.UUID;
 @Slf4j
 public class CryptoService {
     private final CryptoRepository cryptoRepository;
-    private final UserService userService;
     private final CryptoAccountMapper accountMapper;
 
     public CryptoAccountDto getAccountByUuid(UUID uuid) {
@@ -27,14 +25,12 @@ public class CryptoService {
     }
 
     public List<CryptoAccountDto> getAllAccountsByLogin(String login) {
-//        userService.getUserByLogin(login);
         return cryptoRepository.getAllAccountsByLogin(login).stream()
                 .map(account -> accountMapper.convertToDto(account))
                 .toList();
     }
 
     public void createAccount(String login, CryptoCurrency currency) {
-//        userService.getUserByLogin(login);
         CryptoAccount account = new CryptoAccount();
         UUID uuid = UUID.randomUUID();
 
@@ -45,7 +41,6 @@ public class CryptoService {
 
         cryptoRepository.saveAccount(account);
         log.info("Криптоаккаунт успешно создан!");
-
     }
 
 }

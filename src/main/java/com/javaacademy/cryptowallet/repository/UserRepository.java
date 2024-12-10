@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -16,17 +15,10 @@ import java.util.Optional;
 public class UserRepository {
     private final UserStorage userStorage;
 
-    /**
-     * Получение пользователя по логину 3.1.1
-     */
     public Optional<User> getUserByLogin(String login) {
-//        return userStorage.getUserByLogin(login);
         return Optional.ofNullable(userStorage.getUserStorage().get(login));
     }
 
-    /**
-     * Сохранение пользователя в хранилище 3.1.3
-     */
     public void saveUser(User user) {
         String login = user.getLogin();
         if (userStorage.getUserStorage().containsKey(login)) {

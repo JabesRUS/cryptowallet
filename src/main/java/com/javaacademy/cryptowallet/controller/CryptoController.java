@@ -2,7 +2,6 @@ package com.javaacademy.cryptowallet.controller;
 
 import com.javaacademy.cryptowallet.dto.CreateCryptoAccountDto;
 import com.javaacademy.cryptowallet.dto.CryptoAccountDto;
-import com.javaacademy.cryptowallet.entity.CryptoAccount;
 import com.javaacademy.cryptowallet.entity.CryptoCurrency;
 import com.javaacademy.cryptowallet.service.CryptoService;
 import lombok.RequiredArgsConstructor;

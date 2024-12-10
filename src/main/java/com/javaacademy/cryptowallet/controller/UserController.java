@@ -4,7 +4,6 @@ import com.javaacademy.cryptowallet.dto.CreateUserDto;
 import com.javaacademy.cryptowallet.dto.ResetPasswordDto;
 import com.javaacademy.cryptowallet.dto.UserDto;
 import com.javaacademy.cryptowallet.service.UserService;
-import com.javaacademy.cryptowallet.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
