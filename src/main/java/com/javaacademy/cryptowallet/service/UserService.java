@@ -1,5 +1,6 @@
 package com.javaacademy.cryptowallet.service;
 
+import com.javaacademy.cryptowallet.dto.CreateUserDto;
 import com.javaacademy.cryptowallet.dto.UserDto;
 import com.javaacademy.cryptowallet.entity.User;
 import com.javaacademy.cryptowallet.mapper.UserMapper;
@@ -21,7 +22,8 @@ public class UserService {
     /**
      * Сохранение пользователя в хранилище 4.1
      */
-    public void saveUser(User user) {
+    public void saveUser(CreateUserDto createUserDto) {
+        User user = userMapper.convertToEntity(createUserDto);
         userRepository.saveUser(user);
     }
 
@@ -44,7 +46,7 @@ public class UserService {
 
     public List<UserDto> getAllUsers() {
         return userRepository.getAllUsers().stream()
-                .map(user -> userMapper.convertUserToDto(user))
+                .map(user -> userMapper.convertToDto(user))
                 .toList();
     }
 

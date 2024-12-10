@@ -20,14 +20,20 @@ public class UserRepository {
      * Получение пользователя по логину 3.1.1
      */
     public Optional<User> getUserByLogin(String login) {
-        return userStorage.getUserByLogin(login);
+//        return userStorage.getUserByLogin(login);
+        return Optional.ofNullable(userStorage.getUserStorage().get(login));
     }
 
     /**
      * Сохранение пользователя в хранилище 3.1.3
      */
     public void saveUser(User user) {
-        userStorage.saveUser(user);
+        String login = user.getLogin();
+        if (userStorage.getUserStorage().containsKey(login)) {
+            throw new RuntimeException("Пользователь с логином %s уже существует!".formatted(login));
+        }
+        userStorage.getUserStorage().put(login, user);
+        log.info("Пользователь сохранен - {}", user.toString());
     }
 
     public List<User> getAllUsers() {

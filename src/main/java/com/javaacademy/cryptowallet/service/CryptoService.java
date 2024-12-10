@@ -1,8 +1,10 @@
 package com.javaacademy.cryptowallet.service;
 
+import com.javaacademy.cryptowallet.dto.CryptoAccountDto;
 import com.javaacademy.cryptowallet.entity.CryptoAccount;
 import com.javaacademy.cryptowallet.entity.CryptoCurrency;
 import com.javaacademy.cryptowallet.entity.User;
+import com.javaacademy.cryptowallet.mapper.CryptoAccountMapper;
 import com.javaacademy.cryptowallet.repository.CryptoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,18 +20,21 @@ import java.util.UUID;
 public class CryptoService {
     private final CryptoRepository cryptoRepository;
     private final UserService userService;
+    private final CryptoAccountMapper accountMapper;
 
-    public CryptoAccount getAccountByUuid(UUID uuid) {
-        return cryptoRepository.getAccountByUuid(uuid).orElseThrow();
+    public CryptoAccountDto getAccountByUuid(UUID uuid) {
+        return accountMapper.convertToDto(cryptoRepository.getAccountByUuid(uuid).orElseThrow());
     }
 
-    public List<CryptoAccount> getAllAccountsByLogin(String login) {
-        userService.getUserByLogin(login);
-        return cryptoRepository.getAllAccountsByLogin(login);
+    public List<CryptoAccountDto> getAllAccountsByLogin(String login) {
+//        userService.getUserByLogin(login);
+        return cryptoRepository.getAllAccountsByLogin(login).stream()
+                .map(account -> accountMapper.convertToDto(account))
+                .toList();
     }
 
-    public UUID createAccount(String login, CryptoCurrency currency) {
-        userService.getUserByLogin(login);
+    public void createAccount(String login, CryptoCurrency currency) {
+//        userService.getUserByLogin(login);
         CryptoAccount account = new CryptoAccount();
         UUID uuid = UUID.randomUUID();
 
@@ -40,7 +45,7 @@ public class CryptoService {
 
         cryptoRepository.saveAccount(account);
         log.info("Криптоаккаунт успешно создан!");
-        return uuid;
+
     }
 
 }

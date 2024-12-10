@@ -4,12 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.javaacademy.cryptowallet.entity.CryptoCurrency;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class CryptoDto {
-    @JsonProperty("username")
+@NoArgsConstructor
+public class CryptoAccountDto {
+
     private String userName;
-    @JsonProperty("crypto_type")
     private CryptoCurrency cryptoType;
+    private BigDecimal amountOnAccount;
+    private UUID uuid;
 }
