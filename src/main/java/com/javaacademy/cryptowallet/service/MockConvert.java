@@ -14,7 +14,7 @@ public class MockConvert {
     @Value("${mock.value}")
     private BigDecimal mockValue;
 
-    public BigDecimal getRateUsd(CryptoCurrency currency) {
+    public BigDecimal getMockRate(CryptoCurrency currency) {
         return mockValue;
     }
 
