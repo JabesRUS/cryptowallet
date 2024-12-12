@@ -1,2 +1,10 @@
 server:
   port: 8008
+
+api:
+  base-url: https://api.coingecko.com/api/v3
+  name-header: x_cg_demo_api_key
+  value-header: xCVqoMDWXQpoSpqNTCshp5Ua
+
+mock:
+  value: 10000
