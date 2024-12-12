@@ -1,0 +1,10 @@
+server:
+  port: 8008
+
+api:
+  coingecko:
+    base-url: https://api.coingecko.com/api/v3
+    name-header: x_cg_demo_api_key
+    value-header: xCVqoMDWXQpoSpqNTCshp5Ua
+  cbr:
+    base-url: https://www.cbr-xml-daily.ru/latest.js

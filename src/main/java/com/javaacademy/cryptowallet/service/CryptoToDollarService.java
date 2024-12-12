@@ -17,14 +17,15 @@ import java.math.BigDecimal;
 @EnableConfigurationProperties(value = ApiProperty.class)
 @RequiredArgsConstructor
 @Profile("prod")
-public class CryptoToDollar {
+public class CryptoToDollarService {
 
     private static final String RESPONSE_PATTERN = "%s/simple/price?ids=%s&vs_currencies=usd";
-    private static final String PATH_PATTERN = "$['%s']['usd']";
+    private static final String PATH_PATTERN = "$.%s.usd";
 
+    private final OkHttpClient client;
     private final ApiProperty apiProperty;
 
-    public BigDecimal getRateUsd(CryptoCurrency currency) {
+    public BigDecimal getRateUsd(CryptoCurrency currency) throws IOException {
         String currencyFullName = currency.getName();
 
         try (Response response = executeRequest(currencyFullName)) {
@@ -34,8 +35,6 @@ public class CryptoToDollar {
             } else {
                 throw new RuntimeException(response.code() + "-" + response.message());
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -47,7 +46,6 @@ public class CryptoToDollar {
     }
 
     private Response executeRequest(String currencyFullName) throws IOException {
-        OkHttpClient client = new OkHttpClient();
         String baseUrl = apiProperty.getBaseUrl();
         String ulrRequest = RESPONSE_PATTERN.formatted(baseUrl, currencyFullName);
         Request request = new Request.Builder()
