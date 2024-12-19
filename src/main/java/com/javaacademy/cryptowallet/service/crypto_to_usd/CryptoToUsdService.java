@@ -1,4 +1,4 @@
-package com.javaacademy.cryptowallet.service;
+package com.javaacademy.cryptowallet.service.crypto_to_usd;
 
 import com.javaacademy.cryptowallet.config.ApiProperty;
 import com.javaacademy.cryptowallet.entity.CryptoCurrency;
@@ -18,24 +18,28 @@ import java.math.BigDecimal;
 @EnableConfigurationProperties(value = ApiProperty.class)
 @RequiredArgsConstructor
 @Profile("prod")
-public class CryptoToDollarService {
+public class CryptoToUsdService implements UsdRateProvider {
 
     private static final String RESPONSE_PATTERN = "%s/simple/price?ids=%s&vs_currencies=usd";
+    private static final String RESPONSE_MESSAGE_EXCEPTION = "Ошибка запроса:";
     private static final String PATH_PATTERN = "$.%s.usd";
 
     private final OkHttpClient client;
     private final ApiProperty apiProperty;
 
-    public BigDecimal getRateUsd(CryptoCurrency currency) throws IOException {
+    @Override
+    public BigDecimal getRateUsd(CryptoCurrency currency) {
         String currencyFullName = currency.getName();
 
         try (Response response = executeRequest(currencyFullName)) {
-            String responseBody = response.body().string();
             if (response.isSuccessful() || response.body() != null) {
+                String responseBody = response.body().string();
                 return extractRateUsd(responseBody, currencyFullName);
             } else {
                 throw new RuntimeException(response.code() + "-" + response.message());
             }
+        } catch (IOException e) {
+            throw new RuntimeException(RESPONSE_MESSAGE_EXCEPTION, e);
         }
     }
 

@@ -1,4 +1,4 @@
-package com.javaacademy.cryptowallet.service;
+package com.javaacademy.cryptowallet.service.exchange;
 
 import com.jayway.jsonpath.JsonPath;
 import lombok.RequiredArgsConstructor;
@@ -16,18 +16,20 @@ import java.math.RoundingMode;
 @Service
 @RequiredArgsConstructor
 @Profile("prod")
-public class ExchangeService {
+public class ExchangeService implements RubToUsdConverter{
     private static final String RESPONSE_MESSAGE_EXCEPTION = "Ошибка запроса: %s - %s.";
     private static final String JSON_PATH = "$.rates.USD";
     private final OkHttpClient client;
     @Value("${api.cbr.base-url}")
     private String baseUrl;
 
+    @Override
     public BigDecimal convertRubToUsd(BigDecimal amountRub) {
         BigDecimal rateDollar = getRateDollar();
         return amountRub.divide(rateDollar, 2, RoundingMode.HALF_DOWN);
     }
 
+    @Override
     public BigDecimal convertUsdToRub(BigDecimal amountUsd) {
         BigDecimal rateDollar = getRateDollar();
         return amountUsd.multiply(rateDollar);

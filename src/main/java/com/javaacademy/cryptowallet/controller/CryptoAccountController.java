@@ -4,6 +4,7 @@ import com.javaacademy.cryptowallet.dto.CreateCryptoAccountDto;
 import com.javaacademy.cryptowallet.dto.CryptoAccountDto;
 import com.javaacademy.cryptowallet.entity.CryptoCurrency;
 import com.javaacademy.cryptowallet.service.CryptoAccountService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/cryptowallet")
+@Tag(name = "Контроллер для криптосчета")
 public class CryptoAccountController {
     private final CryptoAccountService cryptoAccountService;
 

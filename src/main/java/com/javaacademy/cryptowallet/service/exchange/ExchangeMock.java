@@ -1,4 +1,4 @@
-package com.javaacademy.cryptowallet.service;
+package com.javaacademy.cryptowallet.service.exchange;
 
 import com.javaacademy.cryptowallet.entity.CryptoCurrency;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,23 +11,18 @@ import java.math.RoundingMode;
 
 @Service
 @Profile("local")
-public class MockConvert {
-
-    @Value("${mock.crypto-value}")
-    private BigDecimal mockValue;
+public class ExchangeMock implements RubToUsdConverter{
     @Value("${mock.usd-value}")
     private BigDecimal mockUsdValue;
 
-    public BigDecimal getMockRate(CryptoCurrency currency) {
-        return mockValue;
-    }
-
-    public BigDecimal convertRubToUsd(BigDecimal amountRub) throws IOException {
+    @Override
+    public BigDecimal convertRubToUsd(BigDecimal amountRub) {
         BigDecimal rateDollar = mockUsdValue;
         return amountRub.divide(rateDollar, 2, RoundingMode.HALF_DOWN);
     }
 
-    public BigDecimal convertUsdToRub(BigDecimal amountUsd) throws IOException {
+    @Override
+    public BigDecimal convertUsdToRub(BigDecimal amountUsd) {
         BigDecimal rateDollar = mockUsdValue;
         return amountUsd.multiply(rateDollar);
     }
