@@ -19,7 +19,7 @@ public class CryptoAccountRepository {
     private final CryptoAccountMapper cryptoAccountMapper;
 
     public void saveAccount(CryptoAccount account) {
-        UUID uuid = UUID.randomUUID();
+        UUID uuid = account.getUuid();
         if (cryptoAccountStorage.getCryptoStorageMap().containsKey(uuid)) {
             throw new RuntimeException("Пользователь с указанным UUID уже существует!");
         }

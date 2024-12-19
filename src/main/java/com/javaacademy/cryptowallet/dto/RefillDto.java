@@ -1,6 +1,6 @@
 package com.javaacademy.cryptowallet.dto;
 
-import com.javaacademy.cryptowallet.entity.CryptoCurrency;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +10,9 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class CryptoAccountDto {
-
-    private String userName;
-    private CryptoCurrency cryptoType;
-    private BigDecimal amountOnAccount;
+public class RefillDto {
+    @JsonProperty("account_id")
     private UUID uuid;
+    @JsonProperty("rubles_amount")
+    private BigDecimal amountRub;
 }
