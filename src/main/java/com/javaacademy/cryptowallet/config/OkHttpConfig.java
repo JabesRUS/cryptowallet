@@ -1,4 +1,4 @@
-package com.javaacademy.cryptowallet.service.config;
+package com.javaacademy.cryptowallet.config;
 
 import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;

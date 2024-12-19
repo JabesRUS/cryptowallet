@@ -8,7 +8,7 @@ import java.util.*;
 
 @Component
 @Getter
-public class CryptoStorage {
+public class CryptoAccountStorage {
     private final Map<UUID, CryptoAccount> cryptoStorageMap = new HashMap<>();
 
 }

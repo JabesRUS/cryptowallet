@@ -17,26 +17,32 @@ import java.math.RoundingMode;
 @RequiredArgsConstructor
 @Profile("prod")
 public class ExchangeService {
+    private static final String RESPONSE_MESSAGE_EXCEPTION = "Ошибка запроса: %s - %s.";
     private static final String JSON_PATH = "$.rates.USD";
     private final OkHttpClient client;
     @Value("${api.cbr.base-url}")
     private String baseUrl;
 
-    public BigDecimal convertRubToUsd(BigDecimal amountRub) throws IOException {
+    public BigDecimal convertRubToUsd(BigDecimal amountRub) {
         BigDecimal rateDollar = getRateDollar();
         return amountRub.divide(rateDollar, 2, RoundingMode.HALF_DOWN);
     }
 
-    public BigDecimal convertUsdToRub(BigDecimal amountUsd) throws IOException {
+    public BigDecimal convertUsdToRub(BigDecimal amountUsd) {
         BigDecimal rateDollar = getRateDollar();
         return amountUsd.multiply(rateDollar);
     }
 
-    private BigDecimal getRateDollar() throws IOException {
-        String responseBody = getAllData();
-        Double rateDollar = JsonPath.parse(responseBody).read(JSON_PATH, Double.class);
+    private BigDecimal getRateDollar() {
+        try {
+            String responseBody = getAllData();
+            Double rateDollar = JsonPath.parse(responseBody).read(JSON_PATH, Double.class);
 
-        return BigDecimal.valueOf(rateDollar);
+            return BigDecimal.valueOf(rateDollar);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private String getAllData() throws IOException {
@@ -49,8 +55,8 @@ public class ExchangeService {
             if (response.body() != null && response.isSuccessful()) {
                 return response.body().string();
             } else {
-                throw new RuntimeException();
-             }
+                throw new RuntimeException(RESPONSE_MESSAGE_EXCEPTION.formatted(response.code(), response.message()));
+            }
         }
 
     }

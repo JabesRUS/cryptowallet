@@ -1,5 +1,6 @@
 package com.javaacademy.cryptowallet.service;
 
+import com.javaacademy.cryptowallet.config.ApiProperty;
 import com.javaacademy.cryptowallet.entity.CryptoCurrency;
 import com.jayway.jsonpath.JsonPath;
 import lombok.RequiredArgsConstructor;

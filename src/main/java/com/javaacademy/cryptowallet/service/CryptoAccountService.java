@@ -4,7 +4,7 @@ import com.javaacademy.cryptowallet.dto.CryptoAccountDto;
 import com.javaacademy.cryptowallet.entity.CryptoAccount;
 import com.javaacademy.cryptowallet.entity.CryptoCurrency;
 import com.javaacademy.cryptowallet.mapper.CryptoAccountMapper;
-import com.javaacademy.cryptowallet.repository.CryptoRepository;
+import com.javaacademy.cryptowallet.repository.CryptoAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,16 +16,16 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CryptoService {
-    private final CryptoRepository cryptoRepository;
+public class CryptoAccountService {
+    private final CryptoAccountRepository cryptoAccountRepository;
     private final CryptoAccountMapper accountMapper;
 
     public CryptoAccountDto getAccountByUuid(UUID uuid) {
-        return accountMapper.convertToDto(cryptoRepository.getAccountByUuid(uuid).orElseThrow());
+        return accountMapper.convertToDto(cryptoAccountRepository.getAccountByUuid(uuid).orElseThrow());
     }
 
     public List<CryptoAccountDto> getAllAccountsByLogin(String login) {
-        return cryptoRepository.getAllAccountsByLogin(login).stream()
+        return cryptoAccountRepository.getAllAccountsByLogin(login).stream()
                 .map(account -> accountMapper.convertToDto(account))
                 .toList();
     }
@@ -39,7 +39,7 @@ public class CryptoService {
         account.setAmountOnAccount(BigDecimal.ZERO);
         account.setUuid(uuid);
 
-        cryptoRepository.saveAccount(account);
+        cryptoAccountRepository.saveAccount(account);
         log.info("Криптоаккаунт успешно создан!");
     }
 
