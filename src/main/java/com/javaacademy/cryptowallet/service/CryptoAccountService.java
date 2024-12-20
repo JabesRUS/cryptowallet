@@ -58,19 +58,19 @@ public class CryptoAccountService {
     }
 
     private void changeBalance(UUID uuid, BigDecimal amountRub, TypeOperation type) {
-        BigDecimal amountInCrypto = getAmountInCrypto(uuid, amountRub);
+        BigDecimal amountRubInCrypto = getAmountInCrypto(uuid, amountRub);
         CryptoAccount cryptoAccount = cryptoAccountRepository.getAccountByUuid(uuid).orElseThrow();
 
         BigDecimal balanceOnAccount = cryptoAccount.getAmountOnAccount();
         BigDecimal newBalance = switch (type) {
-            case ADD -> balanceOnAccount.add(amountInCrypto);
-            case SUBTRACT -> balanceOnAccount.subtract(amountInCrypto);
+            case ADD -> balanceOnAccount.add(amountRubInCrypto);
+            case SUBTRACT -> balanceOnAccount.subtract(amountRubInCrypto);
         };
 
         if (type.equals(TypeOperation.SUBTRACT) && newBalance.compareTo(BigDecimal.ZERO) < 0) {
             throw new RuntimeException("Недостаточно средств на счету.");
         } else if (type.equals(TypeOperation.SUBTRACT)) {
-            log.info("Операция прошла успешно. Продано %s %s.".formatted(amountInCrypto, cryptoAccount.getCurrency()));
+            log.info("Операция прошла успешно. Продано %s %s.".formatted(amountRubInCrypto, cryptoAccount.getCurrency()));
         }
 
         cryptoAccount.setAmountOnAccount(newBalance);
@@ -97,7 +97,8 @@ public class CryptoAccountService {
         CryptoCurrency currency = cryptoAccount.getCurrency();
         BigDecimal currentRateUsd = cryptoToUsdService.getRateUsd(currency);
         BigDecimal amountInUsd = exchangeService.convertRubToUsd(amountRub);
-        return amountInUsd.divide(currentRateUsd, 2, RoundingMode.HALF_DOWN);
+        log.info(String.valueOf(amountInUsd.divide(currentRateUsd, 10, RoundingMode.HALF_DOWN)));
+        return amountInUsd.divide(currentRateUsd, 10, RoundingMode.HALF_DOWN);
     }
 
 }

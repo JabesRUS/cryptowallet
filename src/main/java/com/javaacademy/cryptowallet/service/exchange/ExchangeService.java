@@ -26,13 +26,13 @@ public class ExchangeService implements RubToUsdConverter{
     @Override
     public BigDecimal convertRubToUsd(BigDecimal amountRub) {
         BigDecimal rateDollar = getRateDollar();
-        return amountRub.divide(rateDollar, 2, RoundingMode.HALF_DOWN);
+        return amountRub.multiply(rateDollar);
     }
 
     @Override
     public BigDecimal convertUsdToRub(BigDecimal amountUsd) {
         BigDecimal rateDollar = getRateDollar();
-        return amountUsd.multiply(rateDollar);
+        return amountUsd.divide(rateDollar, 4, RoundingMode.HALF_DOWN);
     }
 
     private BigDecimal getRateDollar() {
