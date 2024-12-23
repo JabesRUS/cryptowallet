@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +20,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class CryptoAccountService {
+    public static final int ROUNDING = 10;
+    public static final int ZERO = 0;
+    public static final String INSUFFICIENT_FUNDS_MESSAGE = "Недостаточно средств на счету.";
+    public static final String TEMPLATE_SUCCESSFUL_OPERATION = "Операция прошла успешно. Продано %s %s.";
     private final CryptoAccountRepository cryptoAccountRepository;
     private final CryptoAccountMapper accountMapper;
     private final CryptoToUsdService cryptoToUsdService;
@@ -36,51 +39,26 @@ public class CryptoAccountService {
                 .toList();
     }
 
-    public void createAccount(String login, CryptoCurrency currency) {
-        CryptoAccount account = new CryptoAccount();
-        UUID uuid = UUID.randomUUID();
-
-        account.setUserLogin(login);
-        account.setCurrency(currency);
-        account.setAmountOnAccount(BigDecimal.ZERO);
-        account.setUuid(uuid);
+    public void saveAccount(String login, CryptoCurrency currency) {
+        CryptoAccount account = createAccount(login, currency);
 
         cryptoAccountRepository.saveAccount(account);
-        log.info("Криптоаккаунт успешно создан!- %s".formatted(uuid));
+        log.info("Криптоаккаунт успешно создан!- %s".formatted(account.getUuid()));
     }
 
     public void refillAccount(UUID uuid, BigDecimal amountRub) {
-        changeBalance(uuid, amountRub, TypeOperation.ADD);
+        changeBalanceAdd(uuid, amountRub);
     }
 
     public void withdrawFromAccount(UUID uuid, BigDecimal amountRub) {
-        changeBalance(uuid, amountRub, TypeOperation.SUBTRACT);
+        changeBalanceSubtract(uuid, amountRub);
     }
 
-    private void changeBalance(UUID uuid, BigDecimal amountRub, TypeOperation type) {
-        BigDecimal amountRubInCrypto = getAmountInCrypto(uuid, amountRub);
-        CryptoAccount cryptoAccount = cryptoAccountRepository.getAccountByUuid(uuid).orElseThrow();
-
-        BigDecimal balanceOnAccount = cryptoAccount.getAmountOnAccount();
-        BigDecimal newBalance = switch (type) {
-            case ADD -> balanceOnAccount.add(amountRubInCrypto);
-            case SUBTRACT -> balanceOnAccount.subtract(amountRubInCrypto);
-        };
-
-        if (type.equals(TypeOperation.SUBTRACT) && newBalance.compareTo(BigDecimal.ZERO) < 0) {
-            throw new RuntimeException("Недостаточно средств на счету.");
-        } else if (type.equals(TypeOperation.SUBTRACT)) {
-            log.info("Операция прошла успешно. Продано %s %s.".formatted(amountRubInCrypto, cryptoAccount.getCurrency()));
-        }
-
-        cryptoAccount.setAmountOnAccount(newBalance);
-    }
-
-    public BigDecimal getRubAmountAllAccountByLogin(String login) {
+    public BigDecimal getRubAmountAllAccountsByLogin(String login) {
         return cryptoAccountRepository.getAllAccountsByLogin(login).stream()
                 .map(account -> account.getUuid())
                 .map(uuid -> getRubAmountByUuid(uuid))
-                .reduce(BigDecimal.ZERO, (accumulator, curent) -> accumulator.add(curent));
+                .reduce(BigDecimal.ZERO, (accumulator, current) -> accumulator.add(current));
     }
 
     public BigDecimal getRubAmountByUuid(UUID uuid) {
@@ -92,13 +70,48 @@ public class CryptoAccountService {
 
     }
 
+    private CryptoAccount createAccount(String login, CryptoCurrency currency) {
+        UUID uuid = UUID.randomUUID();
+
+        return CryptoAccount.builder()
+                .userLogin(login)
+                .currency(currency)
+                .amountOnAccount(BigDecimal.ZERO)
+                .uuid(uuid)
+                .build();
+    }
+
+    private void changeBalanceAdd(UUID uuid, BigDecimal amountRub) {
+        BigDecimal amountRubInCrypto = getAmountInCrypto(uuid, amountRub);
+        CryptoAccount cryptoAccount = cryptoAccountRepository.getAccountByUuid(uuid).orElseThrow();
+
+        BigDecimal balanceOnAccount = cryptoAccount.getAmountOnAccount();
+        BigDecimal newBalance = balanceOnAccount.add(amountRubInCrypto);
+
+        cryptoAccount.setAmountOnAccount(newBalance);
+    }
+
+    private void changeBalanceSubtract(UUID uuid, BigDecimal amountRub) {
+        BigDecimal amountRubInCrypto = getAmountInCrypto(uuid, amountRub);
+        CryptoAccount cryptoAccount = cryptoAccountRepository.getAccountByUuid(uuid).orElseThrow();
+        BigDecimal balanceOnAccount = cryptoAccount.getAmountOnAccount();
+        BigDecimal newBalance = balanceOnAccount.subtract(amountRubInCrypto);
+
+        if (newBalance.compareTo(BigDecimal.ZERO) < ZERO) {
+            throw new RuntimeException(INSUFFICIENT_FUNDS_MESSAGE);
+        }
+
+        log.info(TEMPLATE_SUCCESSFUL_OPERATION.formatted(amountRubInCrypto, cryptoAccount.getCurrency()));
+        cryptoAccount.setAmountOnAccount(newBalance);
+    }
+
     private BigDecimal getAmountInCrypto(UUID id, BigDecimal amountRub) {
         CryptoAccount cryptoAccount = cryptoAccountRepository.getAccountByUuid(id).orElseThrow();
         CryptoCurrency currency = cryptoAccount.getCurrency();
         BigDecimal currentRateUsd = cryptoToUsdService.getRateUsd(currency);
         BigDecimal amountInUsd = exchangeService.convertRubToUsd(amountRub);
-        log.info(String.valueOf(amountInUsd.divide(currentRateUsd, 10, RoundingMode.HALF_DOWN)));
-        return amountInUsd.divide(currentRateUsd, 10, RoundingMode.HALF_DOWN);
+        log.info(String.valueOf(amountInUsd.divide(currentRateUsd, ROUNDING, RoundingMode.HALF_DOWN)));
+        return amountInUsd.divide(currentRateUsd, ROUNDING, RoundingMode.HALF_DOWN);
     }
 
 }

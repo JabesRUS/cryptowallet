@@ -16,9 +16,10 @@ import java.math.RoundingMode;
 @Service
 @RequiredArgsConstructor
 @Profile("prod")
-public class ExchangeService implements RubToUsdConverter{
+public class ExchangeService implements RubToUsdConverter {
     private static final String RESPONSE_MESSAGE_EXCEPTION = "Ошибка запроса: %s - %s.";
     private static final String JSON_PATH = "$.rates.USD";
+    public static final int ROUNDING = 4;
     private final OkHttpClient client;
     @Value("${api.cbr.base-url}")
     private String baseUrl;
@@ -32,7 +33,7 @@ public class ExchangeService implements RubToUsdConverter{
     @Override
     public BigDecimal convertUsdToRub(BigDecimal amountUsd) {
         BigDecimal rateDollar = getRateDollar();
-        return amountUsd.divide(rateDollar, 4, RoundingMode.HALF_DOWN);
+        return amountUsd.divide(rateDollar, ROUNDING, RoundingMode.HALF_DOWN);
     }
 
     private BigDecimal getRateDollar() {

@@ -3,7 +3,7 @@ package com.javaacademy.cryptowallet.repository;
 import com.javaacademy.cryptowallet.dto.CryptoAccountDto;
 import com.javaacademy.cryptowallet.entity.CryptoAccount;
 import com.javaacademy.cryptowallet.mapper.CryptoAccountMapper;
-import com.javaacademy.cryptowallet.storageDb.CryptoAccountStorage;
+import com.javaacademy.cryptowallet.storage.CryptoAccountStorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

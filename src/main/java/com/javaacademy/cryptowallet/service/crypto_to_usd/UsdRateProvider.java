@@ -5,5 +5,5 @@ import com.javaacademy.cryptowallet.entity.CryptoCurrency;
 import java.math.BigDecimal;
 
 public interface UsdRateProvider {
-    public BigDecimal getRateUsd(CryptoCurrency currency);
+    BigDecimal getRateUsd(CryptoCurrency currency);
 }

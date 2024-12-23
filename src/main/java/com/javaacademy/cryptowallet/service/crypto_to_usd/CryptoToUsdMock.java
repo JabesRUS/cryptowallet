@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 @Service
 @Profile("local")
-public class CryptoToUsdMock implements UsdRateProvider{
+public class CryptoToUsdMock implements UsdRateProvider {
     @Value("${mock.crypto-value}")
     private BigDecimal mockValue;
 

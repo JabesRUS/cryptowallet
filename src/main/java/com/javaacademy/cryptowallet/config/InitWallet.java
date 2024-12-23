@@ -1,10 +1,7 @@
 package com.javaacademy.cryptowallet.config;
 
 import com.javaacademy.cryptowallet.dto.CreateUserDto;
-import com.javaacademy.cryptowallet.entity.CryptoAccount;
 import com.javaacademy.cryptowallet.entity.CryptoCurrency;
-import com.javaacademy.cryptowallet.entity.User;
-import com.javaacademy.cryptowallet.mapper.UserMapper;
 import com.javaacademy.cryptowallet.service.CryptoAccountService;
 import com.javaacademy.cryptowallet.service.UserService;
 import jakarta.annotation.PostConstruct;
@@ -24,9 +21,9 @@ public class InitWallet {
         userService.saveUser(user1);
         userService.saveUser(user2);
 
-        cryptoAccountService.createAccount(user1.getLogin(), CryptoCurrency.BTC);
-        cryptoAccountService.createAccount(user1.getLogin(), CryptoCurrency.SOL);
-        cryptoAccountService.createAccount(user2.getLogin(), CryptoCurrency.ETH);
+        cryptoAccountService.saveAccount(user1.getLogin(), CryptoCurrency.BTC);
+        cryptoAccountService.saveAccount(user1.getLogin(), CryptoCurrency.SOL);
+        cryptoAccountService.saveAccount(user2.getLogin(), CryptoCurrency.ETH);
 
 
     }

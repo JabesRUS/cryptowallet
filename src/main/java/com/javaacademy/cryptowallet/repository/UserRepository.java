@@ -1,7 +1,7 @@
 package com.javaacademy.cryptowallet.repository;
 
 import com.javaacademy.cryptowallet.entity.User;
-import com.javaacademy.cryptowallet.storageDb.UserStorage;
+import com.javaacademy.cryptowallet.storage.UserStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

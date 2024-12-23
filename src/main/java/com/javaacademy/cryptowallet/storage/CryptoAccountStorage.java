@@ -1,10 +1,12 @@
-package com.javaacademy.cryptowallet.storageDb;
+package com.javaacademy.cryptowallet.storage;
 
 import com.javaacademy.cryptowallet.entity.CryptoAccount;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Component
 @Getter

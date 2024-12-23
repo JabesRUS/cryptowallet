@@ -46,8 +46,7 @@ public class CryptoToUsdService implements UsdRateProvider {
     private BigDecimal extractRateUsd(String responseBody, String currencyFullName) {
         String jsonPath = PATH_PATTERN.formatted(currencyFullName);
 
-        Double currencyValue = JsonPath.parse(responseBody).read(JsonPath.compile(jsonPath), Double.class);
-        return BigDecimal.valueOf(currencyValue);
+        return JsonPath.parse(responseBody).read(JsonPath.compile(jsonPath), BigDecimal.class);
     }
 
     private Response executeRequest(String currencyFullName) throws IOException {

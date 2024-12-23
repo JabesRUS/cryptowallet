@@ -1,6 +1,7 @@
 package com.javaacademy.cryptowallet.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter

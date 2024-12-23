@@ -1,4 +1,4 @@
-package com.javaacademy.cryptowallet.storageDb;
+package com.javaacademy.cryptowallet.storage;
 
 import com.javaacademy.cryptowallet.entity.User;
 import lombok.Getter;
