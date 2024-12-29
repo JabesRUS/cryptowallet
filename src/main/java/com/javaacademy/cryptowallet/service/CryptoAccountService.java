@@ -6,7 +6,9 @@ import com.javaacademy.cryptowallet.entity.CryptoCurrency;
 import com.javaacademy.cryptowallet.mapper.CryptoAccountMapper;
 import com.javaacademy.cryptowallet.repository.CryptoAccountRepository;
 import com.javaacademy.cryptowallet.service.crypto_to_usd.CryptoToUsdService;
+import com.javaacademy.cryptowallet.service.crypto_to_usd.UsdRateProvider;
 import com.javaacademy.cryptowallet.service.exchange.ExchangeService;
+import com.javaacademy.cryptowallet.service.exchange.RubToUsdConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,8 +28,8 @@ public class CryptoAccountService {
     public static final String TEMPLATE_SUCCESSFUL_OPERATION = "Операция прошла успешно. Продано %s %s.";
     private final CryptoAccountRepository cryptoAccountRepository;
     private final CryptoAccountMapper accountMapper;
-    private final CryptoToUsdService cryptoToUsdService;
-    private final ExchangeService exchangeService;
+    private final UsdRateProvider usdRateProvider;
+    private final RubToUsdConverter rubToUsdConverter;
 
     public CryptoAccountDto getAccountByUuid(UUID uuid) {
         return accountMapper.convertToDto(cryptoAccountRepository.getAccountByUuid(uuid).orElseThrow());
@@ -64,7 +66,7 @@ public class CryptoAccountService {
     public BigDecimal getRubAmountByUuid(UUID uuid) {
         CryptoAccount cryptoAccount = cryptoAccountRepository.getAccountByUuid(uuid).orElseThrow();
         CryptoCurrency currency = cryptoAccount.getCurrency();
-        BigDecimal currentRateUsd = cryptoToUsdService.getRateUsd(currency);
+        BigDecimal currentRateUsd = usdRateProvider.getRateUsd(currency);
         BigDecimal balanceOnAccount = cryptoAccount.getAmountOnAccount();
         return balanceOnAccount.multiply(currentRateUsd);
 
@@ -108,8 +110,8 @@ public class CryptoAccountService {
     private BigDecimal getAmountInCrypto(UUID id, BigDecimal amountRub) {
         CryptoAccount cryptoAccount = cryptoAccountRepository.getAccountByUuid(id).orElseThrow();
         CryptoCurrency currency = cryptoAccount.getCurrency();
-        BigDecimal currentRateUsd = cryptoToUsdService.getRateUsd(currency);
-        BigDecimal amountInUsd = exchangeService.convertRubToUsd(amountRub);
+        BigDecimal currentRateUsd = usdRateProvider.getRateUsd(currency);
+        BigDecimal amountInUsd = rubToUsdConverter.convertRubToUsd(amountRub);
         log.info(String.valueOf(amountInUsd.divide(currentRateUsd, ROUNDING, RoundingMode.HALF_DOWN)));
         return amountInUsd.divide(currentRateUsd, ROUNDING, RoundingMode.HALF_DOWN);
     }

@@ -34,6 +34,7 @@ public class UserController {
 
     @PostMapping("/reset-password")
     @Operation(summary = "Сброс пароля пользователя")
+    @ResponseStatus(code = HttpStatus.ACCEPTED)
     public void resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
         userService.resetPassword(resetPasswordDto.getLogin(),
                 resetPasswordDto.getOldPassword(),
